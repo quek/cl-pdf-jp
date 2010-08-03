@@ -1,0 +1,29 @@
+cl-pdf で Ryumin-Light と GothicBBB-Medium を使えるようする。
+
+
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (require :cl-pdf-jp))
+
+(defpackage :try-cl-pdf
+    (:use :cl :cl-pdf))
+
+(in-package :try-cl-pdf)
+
+(defun example1 (&optional (file #P"/tmp/ex1.pdf"))
+  (pdf:with-document ()
+    (pdf:with-page ()
+      (pdf:with-outline-level ("Example" (pdf:register-page-reference))
+        (let ((mincho (get-font "Ryumin-Light"))
+              (gothic (get-font "GothicBBB-Medium")))
+	  (pdf:in-text-mode
+            (pdf:set-font mincho 36.0)
+            (pdf:move-text 100 800)
+            (pdf:draw-text "あいうabcまみむめも♪"))
+          (pdf:in-text-mode
+            (pdf:set-font gothic 36.0)
+            (pdf:move-text 100 750)
+            (draw-text "あいうabcまみむめも♪")))))
+    (pdf:write-document file))
+  (asdf:run-shell-command (format nil "evince ~a" file)))
+
+(example1)
