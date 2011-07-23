@@ -22,6 +22,17 @@
 
 (defparameter *UniJIS-UCS2-H* (make-instance 'UniJIS-UCS2-H))
 
+(defclass UniJIS-UCS2-HW-H (unicode-encoding)
+  ((font-name-suffix :accessor font-name-suffix :initform "UniJIS-UCS2-HW-H")
+   (ordering :accessor ordering :initform "Japan1")
+   (char-names :accessor char-names :initform #()
+               :documentation "(defmethod initialize-instance :after ((font font) &key encoding &allow-other-keys) のためのダミースロット"))
+  (:default-initargs
+      :name "UniJIS-UCS2-HW-H"
+    :keyword-name :UniJIS-UCS2-HW-H))
+
+(defparameter *UniJIS-UCS2-HW-H* (make-instance 'UniJIS-UCS2-HW-H))
+
 
 (defclass jp-font-metrics (font-metrics)
   ((cid-widths :accessor cid-widths :initform #())
@@ -103,8 +114,8 @@
 
 (defun initialize-jp-font-metrics ()
   (loop for (font-name font-bbox encoding cap-height ascender descender stem-v cid-widths flags) in
-        '(("Ryumin-Light" #(-0.17 -0.331 1.024 0.903) :UniJIS-UCS2-H 0.709 0.723 -0.241 69 #(231 632 500 8718 #(500 500)) 6)
-          ("GothicBBB-Medium" #(-0.174 -0.268 1.001 0.944) :UniJIS-UCS2-H 0.737 0.752  -0.271 99 #(231 632 500 8718 #(500 500)) 4))
+        '(("Ryumin-Light" #(-0.17 -0.331 1.024 0.903) :UniJIS-UCS2-HW-H 0.709 0.723 -0.241 69 #(231 632 500 8718 #(500 500)) 6)
+          ("GothicBBB-Medium" #(-0.174 -0.268 1.001 0.944) :UniJIS-UCS2-HW-H 0.737 0.752  -0.271 99 #(231 632 500 8718 #(500 500)) 4))
         for font-metrics = (make-instance 'jp-font-metrics)
         do   (setf (font-name font-metrics) font-name
                    (full-name font-metrics) font-name
@@ -119,10 +130,10 @@
 (defclass jp-font (font)
   ())
 
-(defmethod get-char-metrics ((char character) (font jp-font) (encoding UniJIS-UCS2-H))
+(defmethod get-char-metrics ((char character) (font jp-font) (encoding UniJIS-UCS2-HW-H))
   (get-char-metrics (char-code char) font encoding))
 
-(defmethod get-char-metrics ((code integer) (font jp-font) (encoding UniJIS-UCS2-H))
+(defmethod get-char-metrics ((code integer) (font jp-font) (encoding UniJIS-UCS2-HW-H))
   (make-instance 'char-metrics
                  :code code
                  :name (char-name (code-char code))
@@ -140,7 +151,7 @@
       (ttu-font-metrics
          (setf encoding *unicode-encoding*))
       (jp-font-metrics
-         (setf encoding *UniJIS-UCS2-H*)))
+         (setf encoding *UniJIS-UCS2-HW-H*)))
     (let ((font (gethash (list name (get-encoding encoding)) *font-cache*)))
       (if font
           font
